@@ -13,7 +13,9 @@ import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.FontFactory;
+import com.lowagie.text.HeaderFooter;
 import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfWriter;
@@ -27,6 +29,10 @@ public class Main implements HttpFunction{
         final PdfWriter instance = PdfWriter.getInstance(document, out);
            document.open();
            instance.getInfo().put(PdfName.CREATOR, new PdfString(Document.getVersion()));
+
+           // Header
+           HeaderFooter header = new HeaderFooter(new Phrase("Alo"), true);
+           document.setHeader(header);
 
            // Titulo da avaliação
            Paragraph p1 = new Paragraph(new Chunk(exam.getName(), FontFactory.getFont(FontFactory.HELVETICA, 14)));
