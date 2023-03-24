@@ -2,11 +2,8 @@ package com.example;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.example.models.Exam;
-import com.example.models.Question;
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
@@ -36,12 +33,10 @@ public class Main implements HttpFunction{
            document.add(p1);
 
            // Nome da turma
-           document.add(new Paragraph("Turma:" + exam.getCourseName()));
+           document.add(new Paragraph("Turma: " + exam.getCourseName()));
 
-           // Questões
-           for(int i = 0; i < exam.getQuestions().size(); i++) {
-               document.add(new Paragraph((i + 1) + ") " + exam.getQuestions().get(i).getMainText()));
-           }
+           // Descrição da avaliação
+           document.add(new Paragraph("Descrição da avaliação: " + exam.getDescription()));
 
         } catch (DocumentException de) {
             System.err.println(de.getMessage());
@@ -55,13 +50,7 @@ public class Main implements HttpFunction{
             JsonObject body = gson.fromJson(request.getReader(), JsonObject.class);
             
             Exam exam = new Exam();
-            exam.setName(body.get("name").getAsString().toString());
-            exam.setCourseName(body.get("courseName").getAsString().toString());
-
-            List<Question> questions = new ArrayList<Question>();
-            questions.add(new Question("Qual é a capital do Brasil?"));
-            questions.add(new Question("Qual é a capital do Estados Unidos?"));
-            exam.setQuestions(questions);
+            exam.convertJsonToExam(body);
             
             response.setContentType("application/pdf");
 
